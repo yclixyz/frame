@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.4.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Gugubao.Domain.Infrastructure\Gugubao.Domain.Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>
