@@ -14,6 +14,13 @@ namespace Gugubao.Extensions
     /// </summary>
     public class AssignOperationExtensions : IOperationFilter
     {
+        private readonly string _projectName;
+
+        public AssignOperationExtensions(string projectName)
+        {
+            _projectName = projectName;
+        }
+
         /// <summary>
         /// apply
         /// </summary>
@@ -23,8 +30,8 @@ namespace Gugubao.Extensions
         {
             operation.ExternalDocs = new OpenApiExternalDocs
             {
-                Description = "Api文档，仅用于开发",
-                Url = new Uri("https://www.baidu.com")
+                Description = $"{_projectName}Api中心",
+                Url = new Uri("https://www.lianghuiw.com")
             };
 
             //var hasAllowAttribute = context.MethodInfo.GetCustomAttributes(true)
@@ -38,7 +45,7 @@ namespace Gugubao.Extensions
             //    operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
             //}
 
-            //operation.Description = "Api文档，仅用于开发";
+            //operation.Description = "估小铺、估估宝、估豆卖菜系统类别分别为1,2,3";
         }
     }
 }

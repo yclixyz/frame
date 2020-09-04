@@ -24,7 +24,7 @@ namespace Gugubao.Extensions
             builder.AddFilter((c, level) => c == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information).AddConsole();
         });
 
-        public static IServiceCollection AddSwaggerService(this IServiceCollection services, Assembly assembly,Assembly modelAssmebly)
+        public static IServiceCollection AddSwaggerService(this IServiceCollection services, string projectName)
         {
             // 添加Swagger Api服务
             services.AddApiVersioning();
@@ -36,9 +36,9 @@ namespace Gugubao.Extensions
                     c.SwaggerDoc(version,
                                  new OpenApiInfo
                                  {
-                                     Title = "结算中心",
+                                     Title = projectName,
                                      Version = version,
-                                     Description = $"结算中心{version}",
+                                     Description = $"{projectName}{version}",
                                      TermsOfService = new Uri("http://www.lianghuiw.com")
                                  });
                 });
@@ -48,16 +48,12 @@ namespace Gugubao.Extensions
                     return apiDesc.HasVersion(docName);
                 });
 
-                c.OperationFilter<AssignOperationExtensions>();
+                c.OperationFilter<AssignOperationExtensions>(projectName);
                 c.OperationFilter<RemoveVersionParameters>();
                 c.DocumentFilter<SetVersionInPaths>();
 
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{assembly.GetName().Name }.xml");
-                c.IncludeXmlComments(xmlPath);
-
-                var xmlModelPath = Path.Combine(AppContext.BaseDirectory, $"{modelAssmebly.GetName().Name }.xml");
-
-                c.IncludeXmlComments(xmlModelPath);
+                DirectoryInfo di = new DirectoryInfo(AppContext.BaseDirectory);
+                di.GetFiles("*.xml", 0).ToList().ForEach(d => { c.IncludeXmlComments(d.FullName); });
 
                 c.EnableAnnotations();
             });

@@ -23,6 +23,7 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
+using OpenTelemetry.Trace;
 
 namespace Gugubao.Main
 {
@@ -45,12 +46,24 @@ namespace Gugubao.Main
                     .AddDbService<MySqlDbContext>(Configuration, Assembly.GetExecutingAssembly())
                     //.AddDbService<IntegrationEventLogContext>(Configuration, Assembly.GetExecutingAssembly())
                     .AddQueries(Assembly.GetAssembly(typeof(CustomerQuery)))
-                    .AddSwaggerService(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(CreateCustomerCommand)))
+                    .AddSwaggerService(Assembly.GetExecutingAssembly().GetName().Name)
                     .AddRabbitmq(Configuration)
                     //.AddRabbitEvent(Assembly.GetAssembly(typeof(UpdatePhoneEvent)))
                     //.AddEventLogService(Assembly.GetAssembly(typeof(UpdatePhoneEvent)))
                     .AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>))
                     .AddResponseCaching();
+
+            services.AddOpenTelemetryTracerProvider(options =>
+            {
+                options.AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddGrpcClientInstrumentation()
+                .AddZipkinExporter(zipkin =>
+                {
+                    zipkin.ServiceName = "test";
+                    zipkin.Endpoint = new Uri("http://ip:9411/api/v2/spans");
+                });
+            });
 
             services.AddHttpClient();
 
